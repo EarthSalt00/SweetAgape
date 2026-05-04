@@ -1,0 +1,19 @@
+{
+  "name": "Sweet Agape",
+  "short_name": "Sweet Agape",
+  "description": "A glass-pastel bakery: cakes, macarons, cupcakes, lollipops.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff7fb",
+  "theme_color": "#fbe4ef",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%23ffd0e2'/><stop offset='1' stop-color='%23cfe7f7'/></linearGradient></defs><rect width='192' height='192' rx='42' fill='url(%23g)'/><text x='50%25' y='58%25' text-anchor='middle' font-family='ui-rounded,system-ui' font-size='110' fill='%23a4708e'>🍰</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

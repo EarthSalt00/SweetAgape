@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Sweet Agape — Glass-Pastel Bakery</title>
+<meta name="description" content="Sweet Agape — a tiny glass-pastel bakery. Cakes, macarons, cupcakes, and lollipops baked with love." />
+<meta name="theme-color" content="#fbe4ef" />
+<link rel="manifest" href="manifest.webmanifest" />
+
+<!-- ar.io / permaweb hints: a relative-path-only static site is gateway-friendly.
+     Open-WebUI-Client-for-Android compat: standard PWA manifest + responsive viewport. -->
+<meta name="x-arweave-static" content="true" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<!-- p5.js for the alpha-mask video effect (https://p5js.org/examples/imported-media-alpha-mask/) -->
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js" defer></script>
+
+<style>
+  :root{
+    --pink:#fbd5e4; --peach:#ffd9c4; --mint:#c9efd8; --lilac:#e1d4f7; --sky:#cfe7f7;
+    --cream:#fff7ee; --ink:#5b4a55;
+    --glass: rgba(255,255,255,.55);
+    --glass-strong: rgba(255,255,255,.78);
+    --shadow: 0 10px 40px rgba(180,140,170,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family: ui-rounded, "SF Pro Rounded", "Quicksand", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 800px at 10% -10%, var(--pink) 0%, transparent 60%),
+      radial-gradient(900px 700px at 110% 20%, var(--lilac) 0%, transparent 55%),
+      radial-gradient(1000px 800px at 50% 110%, var(--mint) 0%, transparent 60%),
+      linear-gradient(180deg, #fff7fb 0%, #f3fbf7 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* pastel font palette helper */
+  .p-pink{color:#e389ad} .p-peach{color:#e8a079} .p-mint{color:#7ec79b}
+  .p-lilac{color:#a48bd8} .p-sky{color:#7fb6da}
+
+  h1,h2,h3{font-weight:700; letter-spacing:.2px}
+  h1{
+    font-size: clamp(2.6rem, 6vw, 5.4rem);
+    background: linear-gradient(90deg,#e389ad,#a48bd8 35%,#7fb6da 65%,#7ec79b);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  }
+  h2{font-size: clamp(1.6rem, 3vw, 2.4rem); color:#9c6e8a}
+  p{line-height:1.65}
+  a{color:#b86a92; text-decoration:none}
+
+  /* ---------- NAV ---------- */
+  nav.top{
+    position:fixed; top:14px; left:50%; transform:translateX(-50%);
+    z-index:50;
+    display:flex; gap:6px; align-items:center;
+    padding:8px 10px;
+    background: var(--glass);
+    border:1px solid rgba(255,255,255,.7);
+    border-radius:999px;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: var(--shadow);
+  }
+  nav.top a{
+    padding:8px 14px; border-radius:999px; font-size:.92rem;
+    color:#7a5a70;
+  }
+  nav.top a:hover{background:rgba(255,255,255,.7)}
+  nav.top .brand{font-weight:800; padding-left:14px; padding-right:18px;
+    background: linear-gradient(90deg,#e389ad,#a48bd8); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    min-height: 100vh;
+    display:grid; grid-template-columns: 1.1fr .9fr; gap: 40px;
+    align-items:center; padding: 120px 8vw 60px;
+    position:relative; overflow:hidden;
+  }
+  header.hero .copy .eyebrow{
+    display:inline-block; padding:6px 14px; border-radius:999px;
+    background: var(--glass-strong); border:1px solid #fff;
+    box-shadow: var(--shadow);
+    font-size:.85rem; color:#a4708e; margin-bottom:18px;
+  }
+  header.hero .copy p.lede{
+    font-size:1.18rem; max-width: 52ch; color:#6e5566;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:26px}
+
+  /* ---------- GLOSSY BUTTONS (universal shading) ---------- */
+  .btn{
+    --c1:#ffd0e2; --c2:#cfe7f7;
+    position:relative; isolation:isolate;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:14px 22px; border-radius:999px; cursor:pointer;
+    font: inherit; font-weight:700; color:#5b4a55;
+    border:1px solid rgba(255,255,255,.85);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.15) 45%, rgba(255,255,255,0) 60%),
+      linear-gradient(135deg, var(--c1), var(--c2));
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.95),
+      inset 0 -8px 14px rgba(255,255,255,.35),
+      0 8px 22px rgba(180,140,170,.28),
+      0 1px 0 rgba(255,255,255,.6);
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  .btn::after{
+    content:""; position:absolute; inset:0; border-radius:inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0) 45%);
+    pointer-events:none; mix-blend-mode:screen; opacity:.75;
+  }
+  .btn:hover{transform: translateY(-1px); filter:brightness(1.04)}
+  .btn:active{transform: translateY(1px) scale(.99)}
+  .btn.primary{ --c1:#ffb8d3; --c2:#c4def3; }
+  .btn.mint{    --c1:#bfeacf; --c2:#e7f7d6; }
+  .btn.lilac{   --c1:#dbc7f5; --c2:#ffd6ec; }
+
+  /* ---------- HERO MEDIA (scroll-triggered) ---------- */
+  .hero-media{
+    position:relative; aspect-ratio: 1/1; max-width: 560px; justify-self:center;
+    border-radius: 36px; overflow:hidden;
+    background: linear-gradient(135deg,#ffe6f1,#e2f3fb 50%,#dff5e7);
+    box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,255,255,.6);
+  }
+  .hero-media video, .hero-media img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .hero-media .shine{
+    position:absolute; inset:-20%; pointer-events:none;
+    background:
+      radial-gradient(closest-side at 20% 20%, rgba(255,255,255,.7), transparent 60%),
+      radial-gradient(closest-side at 80% 30%, rgba(255,200,230,.6), transparent 60%),
+      radial-gradient(closest-side at 50% 90%, rgba(200,235,255,.6), transparent 60%);
+    mix-blend-mode: screen; filter: blur(6px);
+  }
+  .hero-media .badge{
+    position:absolute; left:14px; bottom:14px;
+    padding:8px 12px; border-radius:999px; font-size:.78rem;
+    background: var(--glass-strong); border:1px solid #fff;
+    color:#7a5a70; backdrop-filter: blur(8px);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding: 80px 8vw}
+  section h2{margin:0 0 8px}
+  section .sub{color:#876579; max-width:60ch; margin:0 0 28px}
+
+  .grid{
+    display:grid; gap:22px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .card{
+    position:relative; padding:22px;
+    background: var(--glass-strong);
+    border:1px solid rgba(255,255,255,.85);
+    border-radius:24px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    transition: transform .25s ease, box-shadow .25s ease;
+    overflow:hidden;
+  }
+  .card:hover{transform: translateY(-4px); box-shadow: 0 18px 50px rgba(180,140,170,.3)}
+  .card .swatch{
+    width:100%; aspect-ratio: 4/3; border-radius:16px; margin-bottom:14px;
+    background: linear-gradient(135deg, var(--c1,#ffd0e2), var(--c2,#cfe7f7));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.7), inset 0 -20px 40px rgba(255,255,255,.4);
+    position:relative; overflow:hidden;
+  }
+  .card .swatch::after{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,.85), transparent 45%);
+    mix-blend-mode: screen;
+  }
+  .card h3{margin:.2rem 0 .3rem; color:#7a4f6d}
+  .card .price{font-weight:700; color:#a26487}
+  .card p{margin:.3rem 0 0; color:#6e5566; font-size:.95rem}
+
+  /* ---------- ABOUT / FEATURES ---------- */
+  .feat{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:18px;
+  }
+  .feat .card{padding:24px}
+  @media (max-width: 900px){
+    header.hero{grid-template-columns: 1fr; padding-top:140px}
+    .feat{grid-template-columns: 1fr}
+  }
+
+  /* ---------- p5 alpha-mask canvas ---------- */
+  #p5-stage{
+    position:relative; width:100%; max-width:920px; margin:0 auto;
+    aspect-ratio: 16/9; border-radius:28px; overflow:hidden;
+    background: linear-gradient(135deg,#fde7f1,#e7f4fb,#e7f7ec);
+    box-shadow: var(--shadow);
+  }
+  #p5-stage canvas{display:block; width:100% !important; height:100% !important}
+  #p5-stage .label{
+    position:absolute; left:14px; top:14px; padding:6px 12px; border-radius:999px;
+    background: var(--glass-strong); font-size:.78rem; color:#7a5a70;
+    border:1px solid #fff;
+  }
+
+  /* ---------- NEWSLETTER MODAL ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background: rgba(80,50,70,.32);
+    backdrop-filter: blur(6px); z-index:100;
+    display:none; align-items:center; justify-content:center;
+    animation: fade .25s ease both;
+  }
+  .modal-backdrop.open{display:flex}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{
+    width: min(440px, 92vw); padding:28px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff6fb 100%);
+    border-radius: 28px; border:1px solid rgba(255,255,255,.9);
+    box-shadow: 0 30px 80px rgba(120,80,110,.35);
+    position:relative;
+  }
+  .modal h3{margin:0 0 6px; color:#7a4f6d}
+  .modal p{margin:0 0 16px; color:#7a5a70}
+  .modal input{
+    width:100%; padding:14px 16px; border-radius:14px;
+    border:1px solid #f0d8e6; background:#fff; font:inherit; color:#5b4a55;
+    box-shadow: inset 0 2px 6px rgba(180,140,170,.08);
+  }
+  .modal input:focus{outline:2px solid #f3b6d2; border-color:transparent}
+  .modal .row{display:flex; gap:10px; margin-top:14px}
+  .modal .close{
+    position:absolute; top:10px; right:10px;
+    width:34px; height:34px; border-radius:50%; border:none; cursor:pointer;
+    background: rgba(255,255,255,.8); color:#9c6e8a; font-size:18px;
+  }
+  .modal .ok{display:none; color:#5fa37c; font-weight:700; margin-top:10px}
+  .modal.success .ok{display:block}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding: 50px 8vw 80px; text-align:center; color:#876579;
+  }
+  footer .heart{color:#e389ad}
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{animation: none !important; transition: none !important}
+  }
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Primary">
+  <span class="brand">Sweet Agape</span>
+  <a href="#menu">Menu</a>
+  <a href="#story">Story</a>
+  <a href="#visit">Visit</a>
+  <a href="#" id="open-newsletter">Newsletter</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="copy">
+    <span class="eyebrow">✦ Glass-pastel pâtisserie · est. with love</span>
+    <h1>Cakes that catch the light.</h1>
+    <p class="lede">
+      Sweet Agape is a tiny bakery making prismatic, pastel-soft confections —
+      layered cakes, glossy macarons, cupcakes, and lollipops, baked daily and
+      finished by hand. <span class="p-lilac">Agape</span> is the love we fold in.
+    </p>
+    <div class="cta-row">
+      <button class="btn primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+        🍰 See the menu
+      </button>
+      <button class="btn mint" id="open-newsletter-2">
+        ✉ Join the newsletter
+      </button>
+      <a class="btn lilac" href="#visit">📍 Visit us</a>
+    </div>
+  </div>
+
+  <div class="hero-media" aria-label="Sweet Agape signature cake">
+    <video id="hero-video" muted loop playsinline preload="metadata"
+           poster="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&auto=format&fit=crop">
+      <source src="https://cdn.coverr.co/videos/coverr-pouring-syrup-on-a-cake-2633/1080p.mp4" type="video/mp4" />
+    </video>
+    <span class="shine" aria-hidden="true"></span>
+    <span class="badge">▶ plays as you scroll</span>
+  </div>
+</header>
+
+<!-- ============ MENU ============ -->
+<section id="menu">
+  <h2>The menu</h2>
+  <p class="sub">Small batches, pastel palette, served on glass. Prices in USD.</p>
+  <div class="grid" id="menu-grid"></div>
+</section>
+
+<!-- ============ ALPHA-MASK STAGE (p5.js) ============ -->
+<section id="alpha">
+  <h2>Light through sugar</h2>
+  <p class="sub">A live p5.js alpha-mask vignette — pastels poured through a soft cherry silhouette.
+    Inspired by <a href="https://p5js.org/examples/imported-media-alpha-mask/" target="_blank" rel="noopener">p5.js · imported media · alpha mask</a>.</p>
+  <div id="p5-stage"><span class="label">p5 · alpha mask</span></div>
+</section>
+
+<!-- ============ STORY / FEATURES ============ -->
+<section id="story">
+  <h2>Our story</h2>
+  <p class="sub">Sweet Agape started in a sunlit kitchen with a single rule: every layer should look
+    like it caught a piece of the morning.</p>
+  <div class="feat">
+    <div class="card"><div class="swatch" style="--c1:#ffd0e2;--c2:#ffe9b6"></div><h3>Hand-folded</h3><p>French butter, local cream, and patience. No shortcuts on the crumb.</p></div>
+    <div class="card"><div class="swatch" style="--c1:#cfe7f7;--c2:#dff5e7"></div><h3>Pastel by design</h3><p>Natural pigments — beet, butterfly pea, matcha, saffron — softened to a glow.</p></div>
+    <div class="card"><div class="swatch" style="--c1:#e1d4f7;--c2:#ffd9c4"></div><h3>Made small</h3><p>We bake to the day. When it’s gone, it’s gone — come early, stay late.</p></div>
+  </div>
+</section>
+
+<!-- ============ VISIT ============ -->
+<section id="visit">
+  <h2>Visit Sweet Agape</h2>
+  <p class="sub">Open Wed–Sun, 8am – 4pm. Walk-ins welcome; whole cakes by 48h notice.</p>
+  <div class="grid">
+    <div class="card"><h3>📍 Address</h3><p>14 Glasshouse Lane<br>Pastel Quarter</p></div>
+    <div class="card"><h3>☎ Contact</h3><p><a href="mailto:hello@sweetagape.example">hello@sweetagape.example</a><br>+1 (555) 010-CAKE</p></div>
+    <div class="card"><h3>✦ Custom orders</h3><p>Birthdays, weddings, weird little Tuesdays. <a href="#" id="open-newsletter-3">Tell us a flavor →</a></p></div>
+  </div>
+</section>
+
+<footer>
+  Made with <span class="heart">♥</span> by Sweet Agape · pastel-glass theme ·
+  <a href="#top">back to top</a>
+</footer>
+
+<!-- ============ NEWSLETTER MODAL ============ -->
+<div class="modal-backdrop" id="nl-backdrop" role="dialog" aria-modal="true" aria-labelledby="nl-title">
+  <div class="modal" id="nl-modal">
+    <button class="close" aria-label="Close" id="nl-close">×</button>
+    <h3 id="nl-title">Sweet things, Sundays only.</h3>
+    <p>Drop your email for new flavors, pop-ups, and the occasional secret menu.</p>
+    <form id="nl-form" novalidate>
+      <input type="email" name="email" placeholder="you@cake.club" required autocomplete="email" />
+      <div class="row">
+        <button type="submit" class="btn primary">Subscribe</button>
+        <button type="button" class="btn mint" id="nl-later">Maybe later</button>
+      </div>
+      <div class="ok">✓ You're on the list. Check your inbox for a sprinkle.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+  /* ---------- Menu data ---------- */
+  const items = [
+    {n:"Prism Layer Cake", p:"$8.50/slice", c1:"#ffd0e2", c2:"#cfe7f7", d:"Vanilla bean, raspberry curd, mirror glaze."},
+    {n:"Cherry Glass Slice", p:"$9.00", c1:"#ffe1ec", c2:"#dff5e7", d:"Almond sponge, kirsch, glassy cherry topper."},
+    {n:"Lavender Macaron", p:"$3.25", c1:"#e1d4f7", c2:"#ffd6ec", d:"Honey-lavender ganache, just-snap shells."},
+    {n:"Peach Macaron", p:"$3.25", c1:"#ffd9c4", c2:"#fff1d9", d:"White peach jam, crème mousseline."},
+    {n:"Mint Cloud Cake", p:"$8.00/slice", c1:"#c9efd8", c2:"#e6f7d8", d:"Matcha chiffon, white-chocolate cream."},
+    {n:"Aurora Cupcake", p:"$4.75", c1:"#cfe7f7", c2:"#e1d4f7", d:"Vanilla cake, swirled three-tone buttercream."},
+    {n:"Pop · Rose", p:"$2.50", c1:"#ffc7dc", c2:"#ffe9b6", d:"Hand-pulled rose-petal lollipop."},
+    {n:"Pop · Emerald", p:"$2.50", c1:"#bfeacf", c2:"#cfe7f7", d:"Pandan-lime, cracked sugar shell."},
+  ];
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = items.map(i => `
+    <article class="card">
+      <div class="swatch" style="--c1:${i.c1};--c2:${i.c2}"></div>
+      <h3>${i.n}</h3>
+      <div class="price">${i.p}</div>
+      <p>${i.d}</p>
+    </article>`).join('');
+
+  /* ---------- Scroll-triggered hero video ---------- */
+  const video = document.getElementById('hero-video');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) video.play().catch(()=>{});
+      else video.pause();
+    });
+  }, {threshold: 0.25});
+  io.observe(video);
+  // Also: only start once user has scrolled at all (per request)
+  let scrolled = false;
+  window.addEventListener('scroll', () => {
+    if (!scrolled && window.scrollY > 30) { scrolled = true; video.play().catch(()=>{}); }
+  }, {passive:true});
+
+  /* ---------- Newsletter modal ---------- */
+  const backdrop = document.getElementById('nl-backdrop');
+  const modal = document.getElementById('nl-modal');
+  const openers = ['open-newsletter','open-newsletter-2','open-newsletter-3'];
+  openers.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', (e)=>{ e.preventDefault(); openNL(); });
+  });
+  document.getElementById('nl-close').onclick = closeNL;
+  document.getElementById('nl-later').onclick = closeNL;
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeNL(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNL(); });
+
+  function openNL(){ backdrop.classList.add('open'); setTimeout(()=>modal.querySelector('input').focus(), 60); }
+  function closeNL(){ backdrop.classList.remove('open'); modal.classList.remove('success'); }
+
+  document.getElementById('nl-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = e.target.email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { e.target.email.focus(); return; }
+    // Local-only storage. Replace with your endpoint when wiring a backend.
+    const list = JSON.parse(localStorage.getItem('sweetagape:newsletter') || '[]');
+    if (!list.includes(email)) list.push(email);
+    localStorage.setItem('sweetagape:newsletter', JSON.stringify(list));
+    modal.classList.add('success');
+    setTimeout(closeNL, 1600);
+  });
+
+  // Auto-open newsletter once per visitor after a friendly delay
+  if (!localStorage.getItem('sweetagape:nl-seen')) {
+    setTimeout(() => { openNL(); localStorage.setItem('sweetagape:nl-seen', '1'); }, 6500);
+  }
+
+  /* ---------- p5.js alpha-mask sketch ---------- */
+  // Inspired by p5js.org/examples/imported-media-alpha-mask/
+  // Pastel gradient layer, masked through a soft cherry-shape alpha.
+  window.addEventListener('load', () => {
+    if (typeof p5 === 'undefined') return;
+    new p5((s) => {
+      let g, mask, t = 0, stage;
+      s.setup = () => {
+        stage = document.getElementById('p5-stage');
+        const w = stage.clientWidth, h = stage.clientHeight;
+        const c = s.createCanvas(w, h);
+        c.parent(stage);
+        g = s.createGraphics(w, h);
+        mask = s.createGraphics(w, h);
+        s.noStroke();
+      };
+      s.windowResized = () => {
+        const w = stage.clientWidth, h = stage.clientHeight;
+        s.resizeCanvas(w, h);
+        g = s.createGraphics(w, h);
+        mask = s.createGraphics(w, h);
+      };
+      s.draw = () => {
+        const w = s.width, h = s.height;
+        t += 0.008;
+
+        // pastel gradient field
+        g.clear();
+        for (let y = 0; y < h; y += 4) {
+          const k = y / h;
+          const r = s.lerp(255, 200, k) + 30 * Math.sin(t + k*6);
+          const gr = s.lerp(220, 240, k) + 20 * Math.cos(t*1.2 + k*5);
+          const b = s.lerp(235, 215, k) + 30 * Math.sin(t*0.8 + k*4 + 1.2);
+          g.fill(r, gr, b);
+          g.rect(0, y, w, 4);
+        }
+        // bokeh
+        for (let i = 0; i < 14; i++) {
+          const x = (Math.sin(t*0.6 + i) * 0.5 + 0.5) * w;
+          const y = (Math.cos(t*0.5 + i*1.3) * 0.5 + 0.5) * h;
+          g.fill(255, 255, 255, 90);
+          g.ellipse(x, y, 80 + 30*Math.sin(t+i), 80 + 30*Math.sin(t+i));
+        }
+
+        // alpha mask: soft cherry silhouette + drifting halos
+        mask.clear();
+        mask.fill(255);
+        // cherry body
+        const cx = w*0.5, cy = h*0.55, rad = Math.min(w,h)*0.28;
+        for (let r = rad; r > 0; r -= 6) {
+          mask.fill(255, 255, 255, s.map(r, 0, rad, 255, 30));
+          mask.ellipse(cx, cy, r*2, r*2);
+        }
+        // stem
+        mask.noFill(); mask.stroke(255, 220); mask.strokeWeight(10);
+        mask.noFill();
+        mask.beginShape();
+        mask.vertex(cx, cy - rad*0.9);
+        mask.bezierVertex(cx + rad*0.4, cy - rad*1.4, cx + rad*0.7, cy - rad*1.6, cx + rad*0.9, cy - rad*1.8);
+        mask.endShape();
+        mask.noStroke();
+        // soft drifting blobs
+        for (let i = 0; i < 6; i++) {
+          const a = t + i;
+          mask.fill(255, 180);
+          mask.ellipse(w*0.5 + Math.cos(a)*w*0.3, h*0.5 + Math.sin(a*1.1)*h*0.3, 140, 140);
+        }
+
+        // composite: copy mask alpha onto the gradient
+        const img = g.get();
+        img.mask(mask.get());
+        s.background(255, 247, 251);
+        s.image(img, 0, 0);
+      };
+    });
+  });
+</script>
+</body>
+</html>
