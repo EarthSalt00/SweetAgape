@@ -3,122 +3,219 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sweet Agape Bakery</title>
+<title>Sweet Agape — Artisan Dessert Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #fdf6ec;
-    --rose: #c9596b;
-    --cocoa: #3b2a25;
-    --gold: #c79a4a;
+    --ink: #0a0a0a;
+    --soft: rgba(255,255,255,0.08);
+    --line: rgba(255,255,255,0.10);
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.72);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--cream); color: var(--cocoa); font-family: 'Inter', sans-serif; line-height: 1.6; }
-  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
-  a { color: var(--rose); text-decoration: none; }
+  html, body {
+    background: var(--ink); color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-weight: 300;
+    -webkit-font-smoothing: antialiased; line-height: 1.6;
+  }
+  .serif { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
 
   header {
-    position: sticky; top: 0; z-index: 10;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 1rem 2rem; background: rgba(253,246,236,0.95);
-    backdrop-filter: blur(8px); border-bottom: 1px solid rgba(59,42,37,0.08);
+    padding: 1.5rem 2.5rem;
+    background: rgba(10,10,10,0.4); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
   }
-  .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--rose); }
-  nav a { margin-left: 1.5rem; font-size: 0.95rem; color: var(--cocoa); }
-  nav a:hover { color: var(--rose); }
+  .brand { letter-spacing: 0.35em; font-size: 0.85rem; font-weight: 500; }
+  nav a { margin-left: 2rem; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+  nav a:hover { color: #fff; }
 
   .hero {
-    min-height: 80vh; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    padding: 4rem 1.5rem;
+    min-height: 100vh; padding: 8rem 2.5rem 4rem;
+    display: flex; align-items: center;
     background:
-      radial-gradient(circle at 20% 20%, rgba(201,89,107,0.18), transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(199,154,74,0.20), transparent 50%),
-      var(--cream);
+      radial-gradient(1200px 600px at 75% 30%, rgba(180,120,90,0.25), transparent 60%),
+      radial-gradient(900px 500px at 15% 80%, rgba(120,80,140,0.22), transparent 60%),
+      linear-gradient(180deg, #0a0a0a 0%, #15100e 100%);
+    position: relative; overflow: hidden;
   }
-  .hero h1 { font-size: clamp(2.8rem, 6vw, 5rem); color: var(--rose); margin-bottom: 1rem; }
-  .hero p { font-size: 1.15rem; max-width: 36rem; margin-bottom: 2rem; color: #5a4640; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; width: 100%; }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: clamp(4rem, 12vw, 11rem); line-height: 0.95; letter-spacing: -0.02em;
+    text-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  }
+  .hero p.lede {
+    margin-top: 2rem; max-width: 32rem; font-size: 1.15rem; color: rgba(255,255,255,0.92);
+    text-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  }
+  .hero .actions { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+
   .btn {
     display: inline-block; padding: 0.9rem 2rem;
-    background: var(--rose); color: var(--cream); border-radius: 999px;
-    font-weight: 600; letter-spacing: 0.5px;
-    transition: transform 0.2s, background 0.2s;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 999px; color: #fff; font-size: 0.85rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    transition: background .25s, color .25s, transform .25s;
   }
-  .btn:hover { background: var(--cocoa); transform: translateY(-2px); }
+  .btn:hover { background: #fff; color: #000; }
+  .btn.solid { background: #fff; color: #000; }
+  .btn.solid:hover { background: transparent; color: #fff; }
 
-  section { padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
-  section h2 { font-size: 2.5rem; text-align: center; margin-bottom: 2.5rem; color: var(--rose); }
+  section { padding: 7rem 2.5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
-  .card {
-    background: white; border-radius: 16px; padding: 2rem 1.5rem;
-    box-shadow: 0 6px 22px rgba(59,42,37,0.08);
-    transition: transform 0.25s;
+  .quote {
+    background: linear-gradient(180deg, #15100e, #0a0a0a);
     text-align: center;
   }
-  .card:hover { transform: translateY(-6px); }
-  .card .emoji { font-size: 2.6rem; }
-  .card h3 { margin: 0.6rem 0 0.4rem; font-size: 1.6rem; }
-  .card p { font-size: 0.95rem; color: #6b554f; }
-  .price { display: block; margin-top: 0.8rem; color: var(--gold); font-weight: 600; }
+  .quote-card {
+    max-width: 56rem; margin: 0 auto;
+    padding: 4rem 2.5rem;
+    background: rgba(20,15,14,0.4); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .quote-card h2 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: clamp(2rem, 5vw, 4rem); line-height: 1.15; margin-bottom: 1.5rem;
+  }
+  .quote-card p { color: var(--muted); font-size: 1.05rem; }
 
-  .about { background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; }
-  .about p { max-width: 38rem; margin: 0 auto; color: #5a4640; }
+  .collection { background: #0a0a0a; }
+  .eyebrow {
+    text-align: center; letter-spacing: 0.4em; text-transform: uppercase;
+    font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: clamp(2.5rem, 6vw, 5rem); text-align: center; line-height: 1; margin-bottom: 4rem;
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;
+  }
+  .card {
+    border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+    background: rgba(255,255,255,0.02); transition: transform .5s, border-color .5s;
+  }
+  .card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.25); }
+  .card .frame {
+    aspect-ratio: 4/5; overflow: hidden;
+  }
+  .card .frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s ease;
+  }
+  .card:hover .frame img { transform: scale(1.06); }
+  .card .body { padding: 1.75rem 1.75rem 2rem; }
+  .card h3 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: 1.9rem; margin-bottom: 0.5rem;
+  }
+  .card p { color: var(--muted); font-size: 0.95rem; }
+
+  .cta { text-align: center; background: linear-gradient(180deg, #0a0a0a, #15100e); }
+  .cta h2 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+    font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 1.5rem;
+  }
+  .cta p { color: var(--muted); font-size: 1.2rem; margin-bottom: 2.5rem; }
+  .cta .actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
   footer {
-    text-align: center; padding: 2rem 1rem; border-top: 1px solid rgba(59,42,37,0.08);
-    font-size: 0.9rem; color: #7a6660;
+    border-top: 1px solid var(--line); padding: 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem; color: var(--muted); font-size: 0.85rem;
+    background: #0a0a0a;
+  }
+  footer .brand-foot { letter-spacing: 0.35em; color: #fff; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 720px) {
+    header { padding: 1rem 1.25rem; }
+    nav a { margin-left: 1rem; }
+    section { padding: 5rem 1.25rem; }
+    .hero { padding: 7rem 1.25rem 4rem; }
   }
 </style>
 </head>
 <body>
   <header>
-    <div class="brand">Sweet Agape</div>
+    <div class="brand">SWEET AGAPE</div>
     <nav>
-      <a href="#menu">Menu</a>
-      <a href="#about">About</a>
-      <a href="#visit">Visit</a>
+      <a href="#collection">Collection</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
   <section class="hero">
-    <h1>Baked with Love.</h1>
-    <p>Small-batch pastries, sourdough, and seasonal cakes — handcrafted every morning in our neighborhood bakery.</p>
-    <a href="#menu" class="btn">See the Menu</a>
-  </section>
-
-  <section id="menu">
-    <h2>Today's Bakes</h2>
-    <div class="grid">
-      <div class="card"><div class="emoji">🥐</div><h3>Butter Croissant</h3><p>72-hour laminated dough, golden and shatteringly crisp.</p><span class="price">$4.50</span></div>
-      <div class="card"><div class="emoji">🍰</div><h3>Strawberry Cake</h3><p>Vanilla sponge with mascarpone and fresh berries.</p><span class="price">$8.00</span></div>
-      <div class="card"><div class="emoji">🍞</div><h3>Country Sourdough</h3><p>Naturally leavened, blistered crust, open crumb.</p><span class="price">$9.00</span></div>
-      <div class="card"><div class="emoji">🧁</div><h3>Brown Butter Cupcake</h3><p>Toasted sugar buttercream, sea salt finish.</p><span class="price">$5.00</span></div>
-      <div class="card"><div class="emoji">🥧</div><h3>Seasonal Galette</h3><p>Stone fruit, almond frangipane, flaky rye crust.</p><span class="price">$7.50</span></div>
-      <div class="card"><div class="emoji">🍪</div><h3>Brown Sugar Cookie</h3><p>Crisp edges, chewy middle, generous chocolate.</p><span class="price">$3.50</span></div>
+    <div class="hero-inner">
+      <h1>Sweet Agape</h1>
+      <p class="lede">An artisan dessert studio crafting moments of pure indulgence. Stumble into our dream kitchen, where every creation is a story told in sugar and light.</p>
+      <div class="actions">
+        <a href="#collection" class="btn solid">Explore Collection</a>
+        <a href="#contact" class="btn">Let's Talk</a>
+      </div>
     </div>
   </section>
 
-  <section id="about">
-    <div class="about">
-      <h2>Our Story</h2>
-      <p><em>Agape</em> means love freely given. That's how we bake — slowly, by hand, with ingredients we'd serve our family. Stop in, say hi, and take home something warm.</p>
+  <section class="quote">
+    <div class="quote-card">
+      <h2>"Baking is the poetry of time and temperature."</h2>
+      <p>Each piece is composed by hand, in small numbers, with intention.</p>
     </div>
   </section>
 
-  <section id="visit">
-    <h2>Visit Us</h2>
-    <div class="grid">
-      <div class="card"><div class="emoji">📍</div><h3>Find Us</h3><p>123 Honey Lane<br />Open Tue–Sun, 7am – 4pm</p></div>
-      <div class="card"><div class="emoji">📞</div><h3>Call</h3><p>(555) 012-3456<br />Pre-orders welcome</p></div>
-      <div class="card"><div class="emoji">✉️</div><h3>Email</h3><p><a href="mailto:hello@sweetagape.test">hello@sweetagape.test</a></p></div>
+  <section id="collection" class="collection">
+    <div class="container">
+      <div class="eyebrow">Signature Collection</div>
+      <h2 class="section-title">A study in flavor &amp; form</h2>
+      <div class="grid">
+        <article class="card">
+          <div class="frame"><img src="assets/cake1.png" alt="Artisan floral layer cake" loading="lazy" /></div>
+          <div class="body">
+            <h3>Botanical Vanilla</h3>
+            <p>Madagascar vanilla bean sponge, wild berry compote, Swiss meringue buttercream.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="frame"><img src="assets/cake2.png" alt="Elegant macaron tower" loading="lazy" /></div>
+          <div class="body">
+            <h3>The Evening Tower</h3>
+            <p>Dark chocolate ganache, salted caramel, espresso macarons.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="frame"><img src="assets/cake3.png" alt="Modern geometric tart" loading="lazy" /></div>
+          <div class="body">
+            <h3>Citrus &amp; Geometry</h3>
+            <p>Yuzu curd, sable breton, toasted meringue spikes.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="cta">
+    <div class="container">
+      <h2>Let's Talk</h2>
+      <p>Ready to create something beautiful together?</p>
+      <div class="actions">
+        <a href="mailto:hello@sweetagape.com" class="btn solid">hello@sweetagape.com</a>
+        <a href="https://instagram.com/sweetagapestudio" class="btn" target="_blank" rel="noopener">@sweetagapestudio</a>
+      </div>
     </div>
   </section>
 
   <footer>
-    © <span id="year"></span> Sweet Agape Bakery · Made with butter and love
+    <div class="brand-foot">SWEET AGAPE</div>
+    <div>© <span id="year"></span> Sweet Agape Studio · Crafted with intention</div>
   </footer>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
