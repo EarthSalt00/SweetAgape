@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sweet Agape Bakery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ec;
+    --rose: #c9596b;
+    --cocoa: #3b2a25;
+    --gold: #c79a4a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--cream); color: var(--cocoa); font-family: 'Inter', sans-serif; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+  a { color: var(--rose); text-decoration: none; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; background: rgba(253,246,236,0.95);
+    backdrop-filter: blur(8px); border-bottom: 1px solid rgba(59,42,37,0.08);
+  }
+  .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--rose); }
+  nav a { margin-left: 1.5rem; font-size: 0.95rem; color: var(--cocoa); }
+  nav a:hover { color: var(--rose); }
+
+  .hero {
+    min-height: 80vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    padding: 4rem 1.5rem;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(201,89,107,0.18), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(199,154,74,0.20), transparent 50%),
+      var(--cream);
+  }
+  .hero h1 { font-size: clamp(2.8rem, 6vw, 5rem); color: var(--rose); margin-bottom: 1rem; }
+  .hero p { font-size: 1.15rem; max-width: 36rem; margin-bottom: 2rem; color: #5a4640; }
+  .btn {
+    display: inline-block; padding: 0.9rem 2rem;
+    background: var(--rose); color: var(--cream); border-radius: 999px;
+    font-weight: 600; letter-spacing: 0.5px;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .btn:hover { background: var(--cocoa); transform: translateY(-2px); }
+
+  section { padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+  section h2 { font-size: 2.5rem; text-align: center; margin-bottom: 2.5rem; color: var(--rose); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
+  .card {
+    background: white; border-radius: 16px; padding: 2rem 1.5rem;
+    box-shadow: 0 6px 22px rgba(59,42,37,0.08);
+    transition: transform 0.25s;
+    text-align: center;
+  }
+  .card:hover { transform: translateY(-6px); }
+  .card .emoji { font-size: 2.6rem; }
+  .card h3 { margin: 0.6rem 0 0.4rem; font-size: 1.6rem; }
+  .card p { font-size: 0.95rem; color: #6b554f; }
+  .price { display: block; margin-top: 0.8rem; color: var(--gold); font-weight: 600; }
+
+  .about { background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; }
+  .about p { max-width: 38rem; margin: 0 auto; color: #5a4640; }
+
+  footer {
+    text-align: center; padding: 2rem 1rem; border-top: 1px solid rgba(59,42,37,0.08);
+    font-size: 0.9rem; color: #7a6660;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">Sweet Agape</div>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#about">About</a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Baked with Love.</h1>
+    <p>Small-batch pastries, sourdough, and seasonal cakes — handcrafted every morning in our neighborhood bakery.</p>
+    <a href="#menu" class="btn">See the Menu</a>
+  </section>
+
+  <section id="menu">
+    <h2>Today's Bakes</h2>
+    <div class="grid">
+      <div class="card"><div class="emoji">🥐</div><h3>Butter Croissant</h3><p>72-hour laminated dough, golden and shatteringly crisp.</p><span class="price">$4.50</span></div>
+      <div class="card"><div class="emoji">🍰</div><h3>Strawberry Cake</h3><p>Vanilla sponge with mascarpone and fresh berries.</p><span class="price">$8.00</span></div>
+      <div class="card"><div class="emoji">🍞</div><h3>Country Sourdough</h3><p>Naturally leavened, blistered crust, open crumb.</p><span class="price">$9.00</span></div>
+      <div class="card"><div class="emoji">🧁</div><h3>Brown Butter Cupcake</h3><p>Toasted sugar buttercream, sea salt finish.</p><span class="price">$5.00</span></div>
+      <div class="card"><div class="emoji">🥧</div><h3>Seasonal Galette</h3><p>Stone fruit, almond frangipane, flaky rye crust.</p><span class="price">$7.50</span></div>
+      <div class="card"><div class="emoji">🍪</div><h3>Brown Sugar Cookie</h3><p>Crisp edges, chewy middle, generous chocolate.</p><span class="price">$3.50</span></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="about">
+      <h2>Our Story</h2>
+      <p><em>Agape</em> means love freely given. That's how we bake — slowly, by hand, with ingredients we'd serve our family. Stop in, say hi, and take home something warm.</p>
+    </div>
+  </section>
+
+  <section id="visit">
+    <h2>Visit Us</h2>
+    <div class="grid">
+      <div class="card"><div class="emoji">📍</div><h3>Find Us</h3><p>123 Honey Lane<br />Open Tue–Sun, 7am – 4pm</p></div>
+      <div class="card"><div class="emoji">📞</div><h3>Call</h3><p>(555) 012-3456<br />Pre-orders welcome</p></div>
+      <div class="card"><div class="emoji">✉️</div><h3>Email</h3><p><a href="mailto:hello@sweetagape.test">hello@sweetagape.test</a></p></div>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> Sweet Agape Bakery · Made with butter and love
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
